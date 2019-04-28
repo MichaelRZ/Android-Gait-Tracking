@@ -1,0 +1,4 @@
+#Thu Apr 04 19:08:49 EDT 2019
+base.0=F\:\\wearapp\\Wearable\\build\\intermediates\\transforms\\dexMerger\\debug\\5
+path.0=classes.dex
+renamed.0=classes.dex

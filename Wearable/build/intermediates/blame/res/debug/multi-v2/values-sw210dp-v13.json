@@ -1,0 +1,26 @@
+{
+    "logs": [
+        {
+            "outputFile": "F:\\wearapp\\Wearable\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-sw210dp-v13\\values-sw210dp-v13.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\orgnX\\.gradle\\caches\\transforms-1\\files-1.1\\wearable-2.2.0.aar\\cffa62011055ed0dae65e16445c02153\\res\\values-sw210dp-v13\\values.xml",
+                    "from": {
+                        "startLines": "4,5,6",
+                        "startColumns": "0,0,0",
+                        "startOffsets": "215,279,339",
+                        "endColumns": "63,59,47",
+                        "endOffsets": "278,338,386"
+                    },
+                    "to": {
+                        "startLines": "2,3,4",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "55,123,187",
+                        "endColumns": "67,63,51",
+                        "endOffsets": "118,182,234"
+                    }
+                }
+            ]
+        }
+    ]
+}

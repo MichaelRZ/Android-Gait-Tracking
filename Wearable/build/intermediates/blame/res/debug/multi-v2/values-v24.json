@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "F:\\wearapp\\Wearable\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v24\\values-v24.xml",
+            "outputFile": "/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v24/values-v24.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\orgnX\\.gradle\\caches\\transforms-1\\files-1.1\\support-media-compat-28.0.0.aar\\cb2094c27ed313ea52e183c8af4339bf\\res\\values-v24\\values-v24.xml",
+                    "source": "/Users/michaelr/.gradle/caches/transforms-2/files-2.1/e7201af0ac6a1eb782d2b896d1ec4242/media-1.0.0/res/values-v24/values-v24.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",

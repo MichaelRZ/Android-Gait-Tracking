@@ -1,0 +1,128 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<!--
+3 Copyright (C) 2014 The Android Open Source Project
+4
+5     Licensed under the Apache License, Version 2.0 (the "License");
+6     you may not use this file except in compliance with the License.
+7     You may obtain a copy of the License at
+8
+9          http://www.apache.org/licenses/LICENSE-2.0
+10
+11     Unless required by applicable law or agreed to in writing, software
+12     distributed under the License is distributed on an "AS IS" BASIS,
+13     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+14     See the License for the specific language governing permissions and
+15     limitations under the License.
+16-->
+17<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+18    package="com.example.wisdm"
+19    android:versionCode="1"
+20    android:versionName="1.0" >
+21
+22    <uses-sdk
+23        android:minSdkVersion="23"
+23-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml
+24        android:targetSdkVersion="28" />
+24-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml
+25
+26    <uses-permission android:name="android.permission.VIBRATE" />
+26-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:19:5-65
+26-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:19:22-63
+27    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+27-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:20:5-71
+27-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:20:22-68
+28    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+28-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:21:5-22:68
+28-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:22:9-65
+29    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+29-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:23:5-79
+29-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:23:22-77
+30    <uses-permission android:name="android.permission.STORAGE" />
+30-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:24:5-66
+30-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:24:22-63
+31
+32    <uses-feature android:name="android.hardware.type.watch" />
+32-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:25:5-64
+32-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:25:19-61
+33
+34    <application
+34-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:26:5-50:19
+35        android:allowBackup="true"
+35-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:27:13-39
+36        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+36-->[androidx.core:core:1.0.0] /Users/michaelr/.gradle/caches/transforms-2/files-2.1/4de34232979cbe134bd28b81339a3afe/core-1.0.0/AndroidManifest.xml:22:18-86
+37        android:debuggable="true"
+38        android:icon="@drawable/ic_launcher"
+38-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:28:13-49
+39        android:label="@string/app_name"
+39-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:29:13-45
+40        android:testOnly="true"
+41        android:theme="@android:style/Theme.DeviceDefault" >
+41-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:30:13-63
+42        <activity
+42-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:31:9-42:20
+43            android:name="com.example.android.google.wearable.app.MainActivity"
+43-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:32:13-41
+44            android:label="@string/app_name" >
+44-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:33:13-45
+45            <intent-filter>
+45-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:34:13-37:29
+46                <action android:name="android.intent.action.MAIN" />
+46-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:35:17-68
+46-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:35:25-66
+47
+48                <category android:name="android.intent.category.LAUNCHER" />
+48-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:36:17-76
+48-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:36:27-74
+49            </intent-filter>
+50            <intent-filter>
+50-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:38:13-41:29
+51                <action android:name="com.google.android.clockwork.example.SKELETON" />
+51-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:39:17-87
+51-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:39:25-85
+52
+53                <category android:name="android.intent.category.DEFAULT" />
+53-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:40:17-75
+53-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:40:27-73
+54            </intent-filter>
+55        </activity>
+56        <activity android:name="com.example.android.google.wearable.app.GridExampleActivity" >
+56-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:43:9-49:20
+56-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:44:13-48
+57            <intent-filter>
+57-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:45:13-48:29
+58                <action android:name="com.example.android.google.wearable.app.GRID_ACTIVITY" />
+58-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:46:17-95
+58-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:46:25-93
+59
+60                <category android:name="android.intent.category.DEFAULT" />
+60-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:40:17-75
+60-->/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/src/main/AndroidManifest.xml:40:27-73
+61            </intent-filter>
+62        </activity>
+63
+64        <uses-library
+64-->[com.google.android.support:wearable:2.2.0] /Users/michaelr/.gradle/caches/transforms-2/files-2.1/81794597f56896f16a2eb18dcd137163/jetified-wearable-2.2.0/AndroidManifest.xml:10:9-12:40
+65            android:name="com.google.android.wearable"
+65-->[com.google.android.support:wearable:2.2.0] /Users/michaelr/.gradle/caches/transforms-2/files-2.1/81794597f56896f16a2eb18dcd137163/jetified-wearable-2.2.0/AndroidManifest.xml:11:13-55
+66            android:required="false" />
+66-->[com.google.android.support:wearable:2.2.0] /Users/michaelr/.gradle/caches/transforms-2/files-2.1/81794597f56896f16a2eb18dcd137163/jetified-wearable-2.2.0/AndroidManifest.xml:12:13-37
+67
+68        <activity
+68-->[com.google.android.gms:play-services-base:11.8.0] /Users/michaelr/.gradle/caches/transforms-2/files-2.1/5af159c1384be27a092e7d69b50e70a4/jetified-play-services-base-11.8.0/AndroidManifest.xml:23:9-26:75
+69            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+69-->[com.google.android.gms:play-services-base:11.8.0] /Users/michaelr/.gradle/caches/transforms-2/files-2.1/5af159c1384be27a092e7d69b50e70a4/jetified-play-services-base-11.8.0/AndroidManifest.xml:24:13-79
+70            android:exported="false"
+70-->[com.google.android.gms:play-services-base:11.8.0] /Users/michaelr/.gradle/caches/transforms-2/files-2.1/5af159c1384be27a092e7d69b50e70a4/jetified-play-services-base-11.8.0/AndroidManifest.xml:25:13-37
+71            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+71-->[com.google.android.gms:play-services-base:11.8.0] /Users/michaelr/.gradle/caches/transforms-2/files-2.1/5af159c1384be27a092e7d69b50e70a4/jetified-play-services-base-11.8.0/AndroidManifest.xml:26:13-72
+72
+73        <meta-data
+73-->[com.google.android.gms:play-services-basement:11.8.0] /Users/michaelr/.gradle/caches/transforms-2/files-2.1/f154fa6bf5fe259a0f1f7b248c5c2f43/jetified-play-services-basement-11.8.0/AndroidManifest.xml:23:9-25:69
+74            android:name="com.google.android.gms.version"
+74-->[com.google.android.gms:play-services-basement:11.8.0] /Users/michaelr/.gradle/caches/transforms-2/files-2.1/f154fa6bf5fe259a0f1f7b248c5c2f43/jetified-play-services-basement-11.8.0/AndroidManifest.xml:24:13-58
+75            android:value="@integer/google_play_services_version" />
+75-->[com.google.android.gms:play-services-basement:11.8.0] /Users/michaelr/.gradle/caches/transforms-2/files-2.1/f154fa6bf5fe259a0f1f7b248c5c2f43/jetified-play-services-basement-11.8.0/AndroidManifest.xml:25:13-66
+76    </application>
+77
+78</manifest>

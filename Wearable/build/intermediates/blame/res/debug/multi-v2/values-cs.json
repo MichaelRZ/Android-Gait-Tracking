@@ -1,27 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "F:\\wearapp\\Wearable\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-cs\\values-cs.xml",
+            "outputFile": "/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/build/intermediates/incremental/mergeDebugResources/merged.dir/values-cs/values-cs.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\orgnX\\.gradle\\caches\\transforms-1\\files-1.1\\support-compat-28.0.0.aar\\35d7e2f06594dfb21d7399c69e8b77f3\\res\\values-cs\\values-cs.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "100",
-                        "endOffsets": "151"
-                    },
-                    "to": {
-                        "startLines": "85",
-                        "startColumns": "4",
-                        "startOffsets": "8727",
-                        "endColumns": "100",
-                        "endOffsets": "8823"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\orgnX\\.gradle\\caches\\transforms-1\\files-1.1\\play-services-base-11.8.0.aar\\68c4fc9912fbcd7b6e4b8fa8922f8c70\\res\\values-cs\\values.xml",
+                    "source": "/Users/michaelr/.gradle/caches/transforms-2/files-2.1/5af159c1384be27a092e7d69b50e70a4/jetified-play-services-base-11.8.0/res/values-cs/values.xml",
                     "from": {
                         "startLines": "4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20",
                         "startColumns": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
@@ -38,7 +21,41 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\orgnX\\.gradle\\caches\\transforms-1\\files-1.1\\wearable-2.2.0.aar\\cffa62011055ed0dae65e16445c02153\\res\\values-cs\\values.xml",
+                    "source": "/Users/michaelr/.gradle/caches/transforms-2/files-2.1/f154fa6bf5fe259a0f1f7b248c5c2f43/jetified-play-services-basement-11.8.0/res/values-cs/values.xml",
+                    "from": {
+                        "startLines": "4",
+                        "startColumns": "0",
+                        "startOffsets": "283",
+                        "endColumns": "201",
+                        "endOffsets": "484"
+                    },
+                    "to": {
+                        "startLines": "71",
+                        "startColumns": "4",
+                        "startOffsets": "6768",
+                        "endColumns": "201",
+                        "endOffsets": "6965"
+                    }
+                },
+                {
+                    "source": "/Users/michaelr/.gradle/caches/transforms-2/files-2.1/4de34232979cbe134bd28b81339a3afe/core-1.0.0/res/values-cs/values-cs.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "85",
+                        "startColumns": "4",
+                        "startOffsets": "8727",
+                        "endColumns": "100",
+                        "endOffsets": "8823"
+                    }
+                },
+                {
+                    "source": "/Users/michaelr/.gradle/caches/transforms-2/files-2.1/81794597f56896f16a2eb18dcd137163/jetified-wearable-2.2.0/res/values-cs/values.xml",
                     "from": {
                         "startLines": "4,9,14,19,24,29,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71",
                         "startColumns": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
@@ -54,23 +71,6 @@
                         "endLines": "6,11,16,21,26,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,81,82,83,84,86,87,88",
                         "endColumns": "10,10,10,10,10,10,81,110,139,89,93,95,94,98,93,96,100,95,87,92,94,90,94,106,106,96,108,108,99,101,89,93,105,105,94,107,107,94,79,73,120,82,167,173",
                         "endOffsets": "487,879,1289,1684,2095,2516,2598,2709,2849,2939,3033,3129,3224,3323,3417,3514,3615,3711,3799,3892,3987,4078,4173,4280,4387,4484,4593,4702,4802,4904,4994,5088,5194,5300,5395,5503,5611,8447,8527,8601,8722,8906,9074,9248"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\orgnX\\.gradle\\caches\\transforms-1\\files-1.1\\play-services-basement-11.8.0.aar\\fd0492e2e793d68322050f75da8a237f\\res\\values-cs\\values.xml",
-                    "from": {
-                        "startLines": "4",
-                        "startColumns": "0",
-                        "startOffsets": "283",
-                        "endColumns": "201",
-                        "endOffsets": "484"
-                    },
-                    "to": {
-                        "startLines": "71",
-                        "startColumns": "4",
-                        "startOffsets": "6768",
-                        "endColumns": "201",
-                        "endOffsets": "6965"
                     }
                 }
             ]

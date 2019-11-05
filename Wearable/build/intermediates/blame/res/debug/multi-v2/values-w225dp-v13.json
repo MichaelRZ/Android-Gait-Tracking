@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "F:\\wearapp\\Wearable\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-w225dp-v13\\values-w225dp-v13.xml",
+            "outputFile": "/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/build/intermediates/incremental/mergeDebugResources/merged.dir/values-w225dp-v13/values-w225dp-v13.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\orgnX\\.gradle\\caches\\transforms-1\\files-1.1\\wearable-2.2.0.aar\\cffa62011055ed0dae65e16445c02153\\res\\values-w225dp-v13\\values.xml",
+                    "source": "/Users/michaelr/.gradle/caches/transforms-2/files-2.1/81794597f56896f16a2eb18dcd137163/jetified-wearable-2.2.0/res/values-w225dp-v13/values.xml",
                     "from": {
                         "startLines": "4,5,6,7",
                         "startColumns": "0,0,0,0",

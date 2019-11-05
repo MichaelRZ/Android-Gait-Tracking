@@ -1,10 +1,44 @@
 {
     "logs": [
         {
-            "outputFile": "F:\\wearapp\\Wearable\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-sv\\values-sv.xml",
+            "outputFile": "/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/build/intermediates/incremental/mergeDebugResources/merged.dir/values-sv/values-sv.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\orgnX\\.gradle\\caches\\transforms-1\\files-1.1\\wearable-2.2.0.aar\\cffa62011055ed0dae65e16445c02153\\res\\values-sv\\values.xml",
+                    "source": "/Users/michaelr/.gradle/caches/transforms-2/files-2.1/4de34232979cbe134bd28b81339a3afe/core-1.0.0/res/values-sv/values-sv.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "73",
+                        "startColumns": "4",
+                        "startOffsets": "8009",
+                        "endColumns": "100",
+                        "endOffsets": "8105"
+                    }
+                },
+                {
+                    "source": "/Users/michaelr/.gradle/caches/transforms-2/files-2.1/5af159c1384be27a092e7d69b50e70a4/jetified-play-services-base-11.8.0/res/values-sv/values.xml",
+                    "from": {
+                        "startLines": "4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20",
+                        "startColumns": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
+                        "startOffsets": "281,386,575,700,808,1008,1131,1280,1409,1616,1722,1915,2041,2254,2436,2528,2617",
+                        "endColumns": "104,188,124,107,199,122,148,128,206,105,192,125,212,181,91,88,103",
+                        "endOffsets": "385,574,699,807,1007,1130,1279,1408,1615,1721,1914,2040,2253,2435,2527,2616,2720"
+                    },
+                    "to": {
+                        "startLines": "51,52,53,54,55,56,57,58,60,61,62,63,64,65,66,67,68",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "4953,5062,5251,5380,5492,5692,5819,5972,6312,6519,6629,6822,6952,7165,7351,7447,7540",
+                        "endColumns": "108,188,128,111,199,126,152,132,206,109,192,129,212,185,95,92,107",
+                        "endOffsets": "5057,5246,5375,5487,5687,5814,5967,6100,6514,6624,6817,6947,7160,7346,7442,7535,7643"
+                    }
+                },
+                {
+                    "source": "/Users/michaelr/.gradle/caches/transforms-2/files-2.1/81794597f56896f16a2eb18dcd137163/jetified-wearable-2.2.0/res/values-sv/values.xml",
                     "from": {
                         "startLines": "4,7,10,13,16,19,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59",
                         "startColumns": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
@@ -23,7 +57,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\orgnX\\.gradle\\caches\\transforms-1\\files-1.1\\play-services-basement-11.8.0.aar\\fd0492e2e793d68322050f75da8a237f\\res\\values-sv\\values.xml",
+                    "source": "/Users/michaelr/.gradle/caches/transforms-2/files-2.1/f154fa6bf5fe259a0f1f7b248c5c2f43/jetified-play-services-basement-11.8.0/res/values-sv/values.xml",
                     "from": {
                         "startLines": "4",
                         "startColumns": "0",
@@ -37,40 +71,6 @@
                         "startOffsets": "6105",
                         "endColumns": "206",
                         "endOffsets": "6307"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\orgnX\\.gradle\\caches\\transforms-1\\files-1.1\\support-compat-28.0.0.aar\\35d7e2f06594dfb21d7399c69e8b77f3\\res\\values-sv\\values-sv.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "100",
-                        "endOffsets": "151"
-                    },
-                    "to": {
-                        "startLines": "73",
-                        "startColumns": "4",
-                        "startOffsets": "8009",
-                        "endColumns": "100",
-                        "endOffsets": "8105"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\orgnX\\.gradle\\caches\\transforms-1\\files-1.1\\play-services-base-11.8.0.aar\\68c4fc9912fbcd7b6e4b8fa8922f8c70\\res\\values-sv\\values.xml",
-                    "from": {
-                        "startLines": "4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20",
-                        "startColumns": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
-                        "startOffsets": "281,386,575,700,808,1008,1131,1280,1409,1616,1722,1915,2041,2254,2436,2528,2617",
-                        "endColumns": "104,188,124,107,199,122,148,128,206,105,192,125,212,181,91,88,103",
-                        "endOffsets": "385,574,699,807,1007,1130,1279,1408,1615,1721,1914,2040,2253,2435,2527,2616,2720"
-                    },
-                    "to": {
-                        "startLines": "51,52,53,54,55,56,57,58,60,61,62,63,64,65,66,67,68",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "4953,5062,5251,5380,5492,5692,5819,5972,6312,6519,6629,6822,6952,7165,7351,7447,7540",
-                        "endColumns": "108,188,128,111,199,126,152,132,206,109,192,129,212,185,95,92,107",
-                        "endOffsets": "5057,5246,5375,5487,5687,5814,5967,6100,6514,6624,6817,6947,7160,7346,7442,7535,7643"
                     }
                 }
             ]

@@ -1,9 +1,10 @@
 package com.example.phoneapp;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,36 +14,46 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.view.WindowManager;
 import android.os.Handler;
-import android.net.Uri;
 import android.widget.Toast;
+import android.widget.Switch;
+//import SmartLocation;
 
-import com.google.android.gms.common.util.IOUtils;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.content.pm.PackageManager;
+import androidx.core.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
+//import android.os.Parcelable;
+//import io.nlopez.smartlocation.SmartLocation;
+import java.lang.Runnable;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.DataClient;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
-import com.google.android.gms.wearable.DataItem;
-import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.MessageClient;
 import com.google.android.gms.wearable.CapabilityClient;
 import com.google.android.gms.wearable.CapabilityInfo;
+//import com.google.android.gms.location.LocationServices;
 
-import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -50,7 +61,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.nio.ByteBuffer;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener,
         MessageClient.OnMessageReceivedListener, DataClient.OnDataChangedListener,
@@ -58,20 +68,29 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private SensorManager sensorManager;
     private boolean record;
     private int seconds;
-    private int accCount = 0, rotCount = 0;
+    private int accCount = 0, rotCount = 0, gpsCount = 0;
     private boolean recievedAcc = false;
     private boolean recievedRot = false;
+    private boolean accOn = false;
+    private boolean rotOn = false;
+    private boolean micOn = false;
+    private boolean gpsOn = false;
     private long lastUpdate = 0;
     private long lastUpdateR = 0;
     private long systemTime;
     private long otherTime;
     private long lastRecord = 0;
+    Handler handler = new Handler();
+    private static final int MY_PERMISSION_ACCESS_COARSE_LOCATION = 11;
+    private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 12;
     private static ArrayList<ArrayList<Float>> accList = new ArrayList<ArrayList<Float>>();
     private static ArrayList<ArrayList<Float>> rotList = new ArrayList<ArrayList<Float>>();
     private ArrayList<ArrayList<Float>> waccList = new ArrayList<ArrayList<Float>>();
     private ArrayList<ArrayList<Float>> wrotList = new ArrayList<ArrayList<Float>>();
+    private static ArrayList<ArrayList<Float>> gpsList = new ArrayList<ArrayList<Float>>();
     Set<Node> nodes;
     List<Node> allNodes;
+    private Node watch = null;
     private String watchId;
     private String watchString;
     private static final String
@@ -79,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private float acc[];
     private float rot[];
     private boolean endRecieved = false;
+    private FusedLocationProviderClient fusedLocationClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sensorManager.registerListener(this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
                 SensorManager.SENSOR_DELAY_FASTEST);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
     public void findDevices(){
         Task<CapabilityInfo> capabilityInfoTask = Wearable.getCapabilityClient(this)
@@ -102,7 +123,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         capabilityInfoTask.addOnCompleteListener(new OnCompleteListener<CapabilityInfo>() {
             @Override
             public void onComplete(Task<CapabilityInfo> task) {
-
                 if (task.isSuccessful()) {
                     CapabilityInfo capabilityInfo = task.getResult();
                     nodes = capabilityInfo.getNodes();
@@ -151,8 +171,33 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // that isn't deprecated, we simply update the full list when the Google API Client is
         // connected and when capability changes come through in the onCapabilityChanged() method.
         findAllWearDevices();
+        checkIfWatchHasApp();
+        checkLocationPermissions();
+        checkSwitches();
+    }
+
+    public void checkSwitches(){
+        boolean temp = micOn;
+        accOn = ((Switch) findViewById(R.id.accSwitch)).isChecked();
+        rotOn = ((Switch) findViewById(R.id.rotSwitch)).isChecked();
+        micOn = ((Switch) findViewById(R.id.micSwitch)).isChecked();
+        gpsOn = ((Switch) findViewById(R.id.gpsSwitch)).isChecked();
+        if(temp != micOn)
+            notifyWatch();
+    }
+    public void notifyWatch(){
+        if(watch != null) {
+            if(micOn) {
+                Wearable.getMessageClient(this).sendMessage(
+                        watch.getId(), "/micOn", ByteBuffer.allocate(4).putInt(1).array());
+            }else {
+                Wearable.getMessageClient(this).sendMessage(
+                        watch.getId(), "/micOff", ByteBuffer.allocate(4).putInt(1).array());
+            }//ByteBuffer.allocate(4).putInt(seconds).array()
+        }
     }
     public void handleMessage(MessageEvent event){
+        checkSwitches();
         watchId = event.getSourceNodeId();
         if((event.getPath() != "/seconds") || (seconds != ByteBuffer.wrap(event.getData()).getInt()))
             switch (event.getPath()) {
@@ -163,6 +208,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     //lastRecord = System.currentTimeMillis();
                     accList.clear();
                     rotList.clear();
+                    gpsList.clear();
                     waccList.clear();
                     wrotList.clear();
                   ByteBuffer wrapped = ByteBuffer.wrap(event.getData());
@@ -171,24 +217,28 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     startRecording();
                     break;
                 case "/wacc":
-                    for(int i = 0; i < 32; i++) {
-                        if(ByteArray2FloatArray(event.getData())[i * 4 + 3] > 0.1)
-                            waccList.add(new ArrayList<>(Arrays.asList(ByteArray2FloatArray(event.getData())[i * 4],
-                                    ByteArray2FloatArray(event.getData())[i * 4 + 1],
-                                    ByteArray2FloatArray(event.getData())[i * 4 + 2],
-                                    ByteArray2FloatArray(event.getData())[i * 4 + 3]-1000)));
+                    if (accOn) {
+                        for (int i = 0; i < 32; i++) {
+                            if (ByteArray2FloatArray(event.getData())[i * 4 + 3] > 0.1)
+                                waccList.add(new ArrayList<>(Arrays.asList(ByteArray2FloatArray(event.getData())[i * 4],
+                                        ByteArray2FloatArray(event.getData())[i * 4 + 1],
+                                        ByteArray2FloatArray(event.getData())[i * 4 + 2],
+                                        ByteArray2FloatArray(event.getData())[i * 4 + 3] - 1000)));
+                        }
+                        Log.d("message:", "message recieved----------------acc");
                     }
-                    Log.d("message:", "message recieved----------------acc");
                     break;
                 case "/wgyro":
-                    for(int i = 0; i < 32; i++) {
-                        if(ByteArray2FloatArray(event.getData())[i * 4 + 3] > 0.1)
-                            wrotList.add(new ArrayList<>(Arrays.asList(ByteArray2FloatArray(event.getData())[i * 4],
-                                    ByteArray2FloatArray(event.getData())[i * 4 + 1],
-                                    ByteArray2FloatArray(event.getData())[i * 4 + 2],
-                                    ByteArray2FloatArray(event.getData())[i * 4 + 3]-1000)));
+                    if (rotOn) {
+                        for (int i = 0; i < 32; i++) {
+                            if (ByteArray2FloatArray(event.getData())[i * 4 + 3] > 0.1)
+                                wrotList.add(new ArrayList<>(Arrays.asList(ByteArray2FloatArray(event.getData())[i * 4],
+                                        ByteArray2FloatArray(event.getData())[i * 4 + 1],
+                                        ByteArray2FloatArray(event.getData())[i * 4 + 2],
+                                        ByteArray2FloatArray(event.getData())[i * 4 + 3] - 1000)));
+                        }
+                        Log.d("message:", "message recieved----------------rot");
                     }
-                    Log.d("message:", "message recieved----------------rot");
                     break;
                 case "/end":
                     //if (recievedRot && recievedAcc) {
@@ -383,76 +433,100 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         String contentWR = "wrx,wry,wrz,time";
         String contentPA = "pax,pay,paz,time";
         String contentPR = "prx,pry,prz,time";
-        String header = "wax,way,waz,wrx,wry,wrz,pax,pay,paz,prx,pry,prz,time";
+        String contentGPS = "latitude,longitude,time";
+        //String header = "wax,way,waz,wrx,wry,wrz,pax,pay,paz,prx,pry,prz,time";
         int j = 0;
         /*float[] rotPhone = new float[rotList.size()*rotList.get(0).size()];
         for (ArrayList<Float> f : rotList) {
             for(Float g : f)
                 rotPhone[j++] = (g != null ? g : Float.NaN); // Or whatever default you want.
         }*/
-        removeEmptyEntries(waccList);
-        removeEmptyEntries(wrotList);
-        removeEmptyEntries(accList);
-        removeEmptyEntries(rotList);
-        File waccFile = new File(file, "watch_acceleration.csv");
-        try (PrintWriter pw = new PrintWriter(waccFile)) {
-            pw.println(contentWA);
-            for (ArrayList<Float> wacc : waccList) {
-                for (int i = 0; i < wacc.size()-1; i++) {
-                    pw.print(wacc.get(i));
-                    pw.print(',');
-                }
-                pw.print(wacc.get(wacc.size()-1));
-                pw.println();
-            }
-        }catch (FileNotFoundException e) {
-            e.printStackTrace();
+        if(accOn) {
+            removeEmptyEntries(waccList);
+            removeEmptyEntries(accList);
+        }if(rotOn) {
+            removeEmptyEntries(wrotList);
+            removeEmptyEntries(rotList);
         }
-        File wrotFile = new File(file, "watch_rotation.csv");
-        try (PrintWriter pw = new PrintWriter(wrotFile)) {
-            pw.println(contentWR);
-            for (ArrayList<Float> wrot : wrotList) {
-                for (int i = 0; i < wrot.size()-1; i++) {
-                    pw.print(wrot.get(i));
-                    pw.print(',');
+        if(accOn) {
+            File waccFile = new File(file, "watch_acceleration.csv");
+            try (PrintWriter pw = new PrintWriter(waccFile)) {
+                pw.println(contentWA);
+                for (ArrayList<Float> wacc : waccList) {
+                    for (int i = 0; i < wacc.size() - 1; i++) {
+                        pw.print(wacc.get(i));
+                        pw.print(',');
+                    }
+                    pw.print(wacc.get(wacc.size() - 1));
+                    pw.println();
                 }
-                pw.print(wrot.get(wrot.size()-1));
-                pw.println();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
             }
-        }catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        File paccFile = new File(file, "phone_acceleration.csv");
-        try (PrintWriter pw = new PrintWriter(paccFile)) {
-            pw.println(contentPA);
-            for (ArrayList<Float> pacc : accList) {
-                for (int i = 0; i < pacc.size()-1; i++) {
-                    pw.print(pacc.get(i));
-                    pw.print(',');
+        }if(rotOn) {
+            File wrotFile = new File(file, "watch_rotation.csv");
+            try (PrintWriter pw = new PrintWriter(wrotFile)) {
+                pw.println(contentWR);
+                for (ArrayList<Float> wrot : wrotList) {
+                    for (int i = 0; i < wrot.size() - 1; i++) {
+                        pw.print(wrot.get(i));
+                        pw.print(',');
+                    }
+                    pw.print(wrot.get(wrot.size() - 1));
+                    pw.println();
                 }
-                pw.print(pacc.get(pacc.size()-1));
-                pw.println();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
             }
-        }catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        File protFile = new File(file, "phone_rotation.csv");
-        try (PrintWriter pw = new PrintWriter(protFile)) {
-            pw.println(contentPR);
-            for (ArrayList<Float> prot : rotList) {
-                for (int i = 0; i < prot.size()-1; i++) {
-                    pw.print(prot.get(i));
-                    pw.print(',');
+        }if(accOn) {
+            File paccFile = new File(file, "phone_acceleration.csv");
+            try (PrintWriter pw = new PrintWriter(paccFile)) {
+                pw.println(contentPA);
+                for (ArrayList<Float> pacc : accList) {
+                    for (int i = 0; i < pacc.size() - 1; i++) {
+                        pw.print(pacc.get(i));
+                        pw.print(',');
+                    }
+                    pw.print(pacc.get(pacc.size() - 1));
+                    pw.println();
                 }
-                pw.print(prot.get(prot.size()-1));
-                pw.println();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
             }
-        }catch (FileNotFoundException e) {
-            e.printStackTrace();
+        }if(rotOn) {
+            File protFile = new File(file, "phone_rotation.csv");
+            try (PrintWriter pw = new PrintWriter(protFile)) {
+                pw.println(contentPR);
+                for (ArrayList<Float> prot : rotList) {
+                    for (int i = 0; i < prot.size() - 1; i++) {
+                        pw.print(prot.get(i));
+                        pw.print(',');
+                    }
+                    pw.print(prot.get(prot.size() - 1));
+                    pw.println();
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
-
+        if(gpsOn){
+            File gpsFile = new File(file, "phone_location_gps.csv");
+            try (PrintWriter pw = new PrintWriter(gpsFile)) {
+                pw.println(contentGPS);
+                for (ArrayList<Float> gps : gpsList) {
+                    for (int i = 0; i < gps.size() - 1; i++) {
+                        pw.print(gps.get(i));
+                        pw.print(',');
+                    }
+                    pw.print(gps.get(gps.size() - 1));
+                    pw.println();
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
         Log.d("system", "done------------------------------------------------------------------------------------------------------------");
-        File csv = new File(file, "wisdm_recording.csv");
+        /*File csv = new File(file, "wisdm_recording.csv");
         try(PrintWriter pw = new PrintWriter(csv)){
             pw.println(header);
             int waIndex, wrIndex, paIndex;
@@ -505,7 +579,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         }catch (FileNotFoundException e) {
             e.printStackTrace();
-        }
+        }*/
         Log.d("system", "done2222--------------------------------------------------------------------------------------------------------");
         Toast.makeText(MainActivity.this,
                 "Saved files successfully.",
@@ -513,6 +587,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //sendStringAsEmail(content);
         //writeFilesOnInternalStorage(this, contentWA, contentWR, contentPA, contentPR);
     }
+    public void checkLocationPermissions(){
+        if (ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED )
+        {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String [] { android.Manifest.permission.ACCESS_COARSE_LOCATION },
+                    MY_PERMISSION_ACCESS_COARSE_LOCATION
+            );
+        }if (ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED )
+        {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String [] { android.Manifest.permission.ACCESS_FINE_LOCATION },
+                    MY_PERMISSION_ACCESS_FINE_LOCATION
+            );
+        }
+    }
+
     public void sendStringAsEmail(String content){
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("text/plain");
@@ -604,17 +696,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 "Files written to directory " + mcoContext.getFilesDir(),
                 Toast.LENGTH_LONG).show();
     }
+    int locationLimiter = -1;
     @Override
     public void onSensorChanged(SensorEvent event) {
-        //Log.d("sensor", "Value: " + Integer.toString(event.sensor.getType()));
+        checkSwitches();
 
         systemTime = System.currentTimeMillis();
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            getAccelerometer(event);
-        }
-        if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-            getGyroscope(event);
-        }
+
+        if (accOn)
+            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
+                getAccelerometer(event);
+        if (rotOn)
+            if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE)
+                getGyroscope(event);
+        if(gpsOn)
+            getGPS();
     }
     private void getAccelerometer(SensorEvent event) {
         //float[] values = event.values;
@@ -635,6 +731,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         lastUpdate = difference;
         //Log.d("acceleration", "Value: " + Float.toString(x) + " " + Float.toString(y) + " " + Float.toString(z));
         accList.add(new ArrayList<> (Arrays.asList(event.values[0], event.values[1], event.values[2]-(9.6f), (float) (difference)-1000)));
+    }
+    private void getGPS(){
+        locationLimiter++;
+        locationLimiter %= 1000;
+        if(locationLimiter == 0){
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+                                // Logic to handle location object
+                                Log.d("gps", "lat : " + location.getLatitude());
+                                Log.d("gps", "long : " + location.getLongitude());
+                                long difference = systemTime - otherTime;
+                                gpsList.add(new ArrayList<> (Arrays.asList((float)location.getLatitude(),(float)location.getLongitude(), (float) (difference)-1000)));
+                            }
+                        }
+                    });
+        }
     }
     private void getGyroscope(SensorEvent event) {
         //float[] values = event.values;
@@ -684,6 +800,43 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         System.arraycopy(b, 0, result, aLen, bLen);
 
         return result;
+    }
+    private void checkIfWatchHasApp() {
+        Log.d("sync", "checkIfPhoneHasApp()");
+
+        Task<CapabilityInfo> capabilityInfoTask = Wearable.getCapabilityClient(this)
+                .getCapability(WISDM_CAPABILITY, CapabilityClient.FILTER_ALL);
+        Task<CapabilityInfo> addLocal = Wearable.getCapabilityClient(this)
+                .getCapability(WISDM_CAPABILITY, CapabilityClient.FILTER_ALL);
+        capabilityInfoTask.addOnCompleteListener(new OnCompleteListener<CapabilityInfo>() {
+            @Override
+            public void onComplete(Task<CapabilityInfo> task) {
+
+                if (task.isSuccessful()) {
+                    Log.d("sync", "Capability request succeeded.");
+                    CapabilityInfo capabilityInfo = task.getResult();
+                    watch = pickBestNodeId(capabilityInfo.getNodes());
+                    Log.d("Nodes: ", "Got node: " + watch);
+
+                } else {
+                    Log.d("sync", "Capability request failed to return any results.");
+                }
+
+                //verifyNodeAndUpdateUI();
+            }
+        });
+    }
+    private Node pickBestNodeId(Set<Node> nodes) {
+        Log.d("picknodeStart", "" + System.currentTimeMillis());
+        Log.d("sync", "pickBestNodeId(): " + nodes);
+
+        Node bestNodeId = null;
+        // Find a nearby node/phone or pick one arbitrarily. Realistically, there is only one phone.
+        for (Node node : nodes) {
+            bestNodeId = node;
+        }
+        Log.d("picknodeEnd", "" + System.currentTimeMillis());
+        return bestNodeId;
     }
     public static int search(ArrayList<ArrayList<Float>> a, Float value) {
 

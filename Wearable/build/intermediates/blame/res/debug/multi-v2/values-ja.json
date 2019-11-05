@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "F:\\wearapp\\Wearable\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-ja\\values-ja.xml",
+            "outputFile": "/Users/michaelr/Downloads/Android-Gait-Tracking-Android-Gait-Tracking/Wearable/build/intermediates/incremental/mergeDebugResources/merged.dir/values-ja/values-ja.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\orgnX\\.gradle\\caches\\transforms-1\\files-1.1\\support-compat-28.0.0.aar\\35d7e2f06594dfb21d7399c69e8b77f3\\res\\values-ja\\values-ja.xml",
+                    "source": "/Users/michaelr/.gradle/caches/transforms-2/files-2.1/4de34232979cbe134bd28b81339a3afe/core-1.0.0/res/values-ja/values-ja.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -21,24 +21,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\orgnX\\.gradle\\caches\\transforms-1\\files-1.1\\play-services-base-11.8.0.aar\\68c4fc9912fbcd7b6e4b8fa8922f8c70\\res\\values-ja\\values.xml",
-                    "from": {
-                        "startLines": "4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20",
-                        "startColumns": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
-                        "startOffsets": "281,383,549,667,771,960,1078,1209,1333,1524,1623,1787,1904,2083,2229,2315,2400",
-                        "endColumns": "101,165,117,103,188,117,130,123,190,98,163,116,178,145,85,84,95",
-                        "endOffsets": "382,548,666,770,959,1077,1208,1332,1523,1622,1786,1903,2082,2228,2314,2399,2495"
-                    },
-                    "to": {
-                        "startLines": "51,52,53,54,55,56,57,58,60,61,62,63,64,65,66,67,68",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "4413,4519,4685,4807,4915,5104,5226,5361,5670,5861,5964,6128,6249,6428,6578,6668,6757",
-                        "endColumns": "105,165,121,107,188,121,134,127,190,102,163,120,178,149,89,88,99",
-                        "endOffsets": "4514,4680,4802,4910,5099,5221,5356,5484,5856,5959,6123,6244,6423,6573,6663,6752,6852"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\orgnX\\.gradle\\caches\\transforms-1\\files-1.1\\wearable-2.2.0.aar\\cffa62011055ed0dae65e16445c02153\\res\\values-ja\\values.xml",
+                    "source": "/Users/michaelr/.gradle/caches/transforms-2/files-2.1/81794597f56896f16a2eb18dcd137163/jetified-wearable-2.2.0/res/values-ja/values.xml",
                     "from": {
                         "startLines": "4,7,10,13,16,19,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59",
                         "startColumns": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
@@ -57,7 +40,24 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\orgnX\\.gradle\\caches\\transforms-1\\files-1.1\\play-services-basement-11.8.0.aar\\fd0492e2e793d68322050f75da8a237f\\res\\values-ja\\values.xml",
+                    "source": "/Users/michaelr/.gradle/caches/transforms-2/files-2.1/5af159c1384be27a092e7d69b50e70a4/jetified-play-services-base-11.8.0/res/values-ja/values.xml",
+                    "from": {
+                        "startLines": "4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20",
+                        "startColumns": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
+                        "startOffsets": "281,383,549,667,771,960,1078,1209,1333,1524,1623,1787,1904,2083,2229,2315,2400",
+                        "endColumns": "101,165,117,103,188,117,130,123,190,98,163,116,178,145,85,84,95",
+                        "endOffsets": "382,548,666,770,959,1077,1208,1332,1523,1622,1786,1903,2082,2228,2314,2399,2495"
+                    },
+                    "to": {
+                        "startLines": "51,52,53,54,55,56,57,58,60,61,62,63,64,65,66,67,68",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "4413,4519,4685,4807,4915,5104,5226,5361,5670,5861,5964,6128,6249,6428,6578,6668,6757",
+                        "endColumns": "105,165,121,107,188,121,134,127,190,102,163,120,178,149,89,88,99",
+                        "endOffsets": "4514,4680,4802,4910,5099,5221,5356,5484,5856,5959,6123,6244,6423,6573,6663,6752,6852"
+                    }
+                },
+                {
+                    "source": "/Users/michaelr/.gradle/caches/transforms-2/files-2.1/f154fa6bf5fe259a0f1f7b248c5c2f43/jetified-play-services-basement-11.8.0/res/values-ja/values.xml",
                     "from": {
                         "startLines": "4",
                         "startColumns": "0",

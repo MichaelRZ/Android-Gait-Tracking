@@ -17,6 +17,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         package="com.example.android.google.wearable.app" >
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.STORAGE" />
     <uses-feature android:name="android.hardware.type.watch" />
     <application
             android:allowBackup="true"

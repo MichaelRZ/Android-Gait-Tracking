@@ -20,21 +20,21 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Environment;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioRecord;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.CapabilityClient;
 import com.google.android.gms.wearable.CapabilityInfo;
 import com.google.android.gms.wearable.DataClient;
-import com.google.android.gms.wearable.DataItem;
-import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.MessageClient;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Node;
-import com.google.android.gms.wearable.PutDataMapRequest;
-import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
+import android.media.MediaRecorder;
 
 import android.app.Activity;
 import android.app.Notification;
@@ -42,9 +42,11 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.view.GestureDetectorCompat;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.view.GestureDetectorCompat;
 import android.support.wearable.view.DelayedConfirmationView;
 import android.support.wearable.view.DismissOverlayView;
 import android.util.Log;
@@ -55,20 +57,21 @@ import android.view.WindowManager;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 import java.nio.ByteBuffer;
 
 public class MainActivity extends Activity
         implements DelayedConfirmationView.DelayedConfirmationListener,
-        SensorEventListener, CapabilityClient.OnCapabilityChangedListener{
+        SensorEventListener, CapabilityClient.OnCapabilityChangedListener,
+        MessageClient.OnMessageReceivedListener, SoundRecorder.OnVoicePlaybackStateChangedListener{
     private static final String TAG = "MainActivity";
 
     private static final int NOTIFICATION_ID = 1;
@@ -80,6 +83,7 @@ public class MainActivity extends Activity
 
     private SensorManager sensorManager;
     private boolean record;
+    private boolean micOn = false;
     private int seconds;
     private int accCount = 0, rotCount = 0;
     private long lastUpdate;
@@ -98,6 +102,16 @@ public class MainActivity extends Activity
             WISDM_CAPABILITY = "phone";
     Set<Node> nodes;
     ByteArrayOutputStream output;
+    MediaRecorder mediaRecorder = null;
+    private SoundRecorder mSoundRecorder;
+    private static final int RECORDER_SAMPLERATE = 8000;
+    private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
+    private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
+    private AudioRecord recorder = null;
+    private Thread recordingThread = null;
+    private boolean isRecording = false;
+    private String soundFileName = "audioRecording.pcm";
+    private String fileNameWav = "audioRecording.wav";
 
     private boolean last = false;
     private boolean lastacc = false;
@@ -125,7 +139,188 @@ public class MainActivity extends Activity
                 SensorManager.SENSOR_DELAY_FASTEST);
         lastUpdate = 0;
         lastUpdateR = 0;
+
         Log.d("createend", "" + System.currentTimeMillis());
+    }
+    int BufferElements2Rec = 1024; // want to play 2048 (2K) since 2 bytes we use only 1024
+    int BytesPerElement = 2; // 2 bytes in 16bit format
+    private void startRecording() {
+
+        recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
+                RECORDER_SAMPLERATE, RECORDER_CHANNELS,
+                RECORDER_AUDIO_ENCODING, BufferElements2Rec * BytesPerElement);
+
+        recorder.startRecording();
+        isRecording = true;
+        recordingThread = new Thread(new Runnable() {
+            public void run() {
+                startMic();
+            }
+        }, "AudioRecorder Thread");
+        recordingThread.start();
+    }
+    public void startMic(){
+
+        Log.d("micMessg", "mic started");
+
+        /*mediaRecorder = new MediaRecorder();
+
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.UNPROCESSED);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+         */
+        File file = new File("/sdcard/Music","dir");
+        int counter = 2;
+        while(file.exists()){
+            file = new File("/sdcard/Music","dir"+counter);
+            counter++;
+        }
+        file.mkdir();
+        File soundFile = new File(file, soundFileName);
+        Log.d("mic", soundFile.getPath());
+        //mediaRecorder.setOutputFile(soundFile.getPath());
+
+        //mSoundRecorder = new SoundRecorder(this, soundFileName, this);
+        //mSoundRecorder.startRecording();
+
+        if (!file.canWrite())
+        {
+            Log.d(TAG, "cannot write in the file: "+file.toString()+", space: "+file.getUsableSpace()+", can read: "+file.canRead()+", list: "+file.list());
+        }
+        short sData[] = new short[BufferElements2Rec];
+
+        FileOutputStream os = null;
+        try {
+            os = new FileOutputStream(soundFile);
+        } catch (java.io.FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        while (isRecording) {
+            // gets the voice output from microphone to byte format
+
+            recorder.read(sData, 0, BufferElements2Rec);
+            System.out.println("Short wirting to file" + sData.toString());
+            try {
+                // // writes the data to file from buffer
+                // // stores the voice buffer
+                byte bData[] = short2byte(sData);
+                os.write(bData, 0, BufferElements2Rec * BytesPerElement);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Wave wave=new Wave(RECORDER_SAMPLERATE,(short)1,sData,0,sData.length-1);
+        File soundFileWav = new File(file, fileNameWav);
+        //if(wave.wroteToFile(soundFileWav))
+          //  Log.d("wav","Click write successful.");
+        //else
+          //  Log.d("wav","Click write failed.");
+        convertToWav(soundFile, soundFileWav);
+        /*try {
+            mediaRecorder.prepare();
+        } catch (IOException e) {
+            Log.e("mic", "prepare() failed");
+        }
+        mediaRecorder.start();
+         */
+    }
+    private void convertToWav(File pcmPath, File wavPath){
+        byte buffer[] = null;
+        int TOTAL_SIZE = 0;
+        File file = pcmPath;
+        if (!file.exists()) {
+            Log.d("wavconvert", "file doesnt exist");
+            return;
+        }
+        TOTAL_SIZE = (int) file.length();
+
+        WaveHeader header = new WaveHeader();
+
+        header.fileLength = TOTAL_SIZE + (44 - 8);
+        header.FmtHdrLeth = 16;
+        header.BitsPerSample = 16;
+        header.Channels = 1;
+        header.FormatTag = 0x0001;
+        header.SamplesPerSec = 8000;
+        header.BlockAlign = (short) (header.Channels * header.BitsPerSample / 8);
+        header.AvgBytesPerSec = header.BlockAlign * header.SamplesPerSec;
+        header.DataHdrLeth = TOTAL_SIZE;
+
+        byte[] h = null;
+        try {
+            h = header.getHeader();
+        } catch (IOException e1) {
+            Log.e("PcmToWav", e1.getMessage());
+            return;
+        }
+
+        if (h.length != 44)
+            return;
+
+
+        File destfile = wavPath;
+        if (destfile.exists())
+            destfile.delete();
+
+
+        try {
+            buffer = new byte[1024 * 4]; // Length of All Files, Total Size
+            java.io.InputStream inStream = null;
+            java.io.OutputStream ouStream = null;
+
+            ouStream = new java.io.BufferedOutputStream(new java.io.FileOutputStream(
+                    destfile.getAbsolutePath()));
+            ouStream.write(h, 0, h.length);
+            inStream = new java.io.BufferedInputStream(new java.io.FileInputStream(
+                    pcmPath.getAbsolutePath()));
+            int size = inStream.read(buffer);
+            while (size != -1) {
+                ouStream.write(buffer);
+                size = inStream.read(buffer);
+            }
+            inStream.close();
+            ouStream.close();
+        } catch (java.io.FileNotFoundException e) {
+            Log.e("PcmToWav", e.getMessage());
+            return;
+        } catch (IOException ioe) {
+            Log.e("PcmToWav", ioe.getMessage());
+            return;
+        }
+        //if (deletePcmFile) {
+            file.delete();
+        //}
+        Log.i("PcmToWav", "makePCMFileToWAVFile  success!");
+        return;
+    }
+    // convert short to byte
+    private byte[] short2byte(short[] sData) {
+        int shortArrsize = sData.length;
+        byte[] bytes = new byte[shortArrsize * 2];
+        for (int i = 0; i < shortArrsize; i++) {
+            bytes[i * 2] = (byte) (sData[i] & 0x00FF);
+            bytes[(i * 2) + 1] = (byte) (sData[i] >> 8);
+            sData[i] = 0;
+        }
+        return bytes;
+
+    }
+    private void stopRecording() {
+        // stops the recording activity
+        isRecording = false;
+        if (null != recorder) {
+            isRecording = false;
+            recorder.stop();
+            recorder.release();
+            recorder = null;
+            recordingThread = null;
+        }
     }
     public void onCapabilityChanged(CapabilityInfo capabilityInfo) {
         Log.d("capabilitychangeStart", "" + System.currentTimeMillis());
@@ -152,6 +347,16 @@ public class MainActivity extends Activity
         return mGestureDetector.onTouchEvent(event) || super.dispatchTouchEvent(event);
     }
 
+    @Override
+    public void onMessageReceived(@NonNull MessageEvent messageEvent) {
+
+    }
+
+    @Override
+    public void onPlaybackStopped() {
+
+    }
+
     private class LongPressListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public void onLongPress(MotionEvent event) {
@@ -162,7 +367,7 @@ public class MainActivity extends Activity
     public void onSensorChanged(SensorEvent event) {
         //Log.d("sensor", "Value: " + Integer.toString(event.sensor.getType()));
         //systemTime = System.currentTimeMillis();
-        Log.d("sensorchange", "" + System.currentTimeMillis());
+        //Log.d("sensorchange", "" + System.currentTimeMillis());
         if(!record)
             return;
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
@@ -242,6 +447,8 @@ public class MainActivity extends Activity
                 sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_FASTEST);
         Wearable.getCapabilityClient(this).addListener(this, WISDM_CAPABILITY);
+        Wearable.getMessageClient(this).addListener(messageEvent ->
+                handleMessage(messageEvent));
         mDataClient = Wearable.getDataClient(this);
         checkIfPhoneHasApp();
     }
@@ -261,6 +468,7 @@ public class MainActivity extends Activity
                     CapabilityInfo capabilityInfo = task.getResult();
                     phone = pickBestNodeId(capabilityInfo.getNodes());
                     Log.d("Nodes: ", "Got node: " + phone);
+
                 } else {
                     Log.d(TAG, "Capability request failed to return any results.");
                 }
@@ -268,6 +476,37 @@ public class MainActivity extends Activity
                 //verifyNodeAndUpdateUI();
             }
         });
+    }
+    private void handleMessage(MessageEvent event){
+        Log.d("micMessg", "got change: " + event.getPath());
+        Log.d("micMessg", "true check: " + (event.getPath()=="/micOn"));
+        Log.d("micMessg", "false check: " + (event.getPath()=="/micOff"));
+        switch (event.getPath()) {
+            case "/micOn":
+                Log.d("micMessg", "true check: " + (event.getPath()=="/micOn"));
+                micOn = true;
+                break;
+            case "/micOff":
+                Log.d("micMessg", "false check: " + (event.getPath()=="/micOff"));
+                micOn = false;
+                break;
+        }
+        /*if (event.getPath() == "/micOn")
+            micOn = true;
+        else if(event.getPath() == "/micOff")
+            micOn = false;*/
+    }
+    public static boolean [] bytesToBooleans(byte [] bytes){
+        boolean [] bools = new boolean[bytes.length * 8];
+        byte [] pos = new byte[]{(byte)0x80, 0x40, 0x20, 0x10, 0x8, 0x4, 0x2, 0x1};
+
+        for(int i = 0; i < bytes.length; i++){
+            for(int j = i * 8, k = 0; k < 8; j++, k++){
+                bools[j] = (bytes[i] & pos[k]) != 0;
+            }
+        }
+
+        return bools;
     }
     @Override
     protected void onPause() {
@@ -342,6 +581,11 @@ public class MainActivity extends Activity
         rotList.clear();
         accCount = 0;
         rotCount = 0;
+        if(micOn){
+            Log.d("micMessg", "micOn is true");
+            startRecording();
+        }else
+            Log.d("micMessg", "micOn is false");
         AcceleratorBuffer = new float[4*COUNT];
         GyroBuffer = new float[4*COUNT];
         delayedConfirmationView.setTotalTimeMs(seconds * 1000);
@@ -361,6 +605,8 @@ public class MainActivity extends Activity
         Log.d(TAG, "onTimerFinished is called.");
         scroll(View.FOCUS_UP);
         record = false;
+        if(recorder != null)
+            stopRecording();
         lastUpdate = 0;
         lastUpdateR = 0;
         last = true;
@@ -425,5 +671,103 @@ public class MainActivity extends Activity
                 scrollView.fullScroll(scrollDirection);
             }
         });
+    }
+    private class Wave
+    {
+        private final int LONGINT = 4;
+        private final int SMALLINT = 2;
+        private final int INTEGER = 4;
+        private final int ID_STRING_SIZE = 4;
+        private final int WAV_RIFF_SIZE = LONGINT+ID_STRING_SIZE;
+        private final int WAV_FMT_SIZE = (4*SMALLINT)+(INTEGER*2)+LONGINT+ID_STRING_SIZE;
+        private final int WAV_DATA_SIZE = ID_STRING_SIZE+LONGINT;
+        private final int WAV_HDR_SIZE = WAV_RIFF_SIZE+ID_STRING_SIZE+WAV_FMT_SIZE+WAV_DATA_SIZE;
+        private final short PCM = 1;
+        private final int SAMPLE_SIZE = 2;
+        int cursor, nSamples;
+        byte[] output;
+
+        public Wave(int sampleRate, short nChannels, short[] data, int start, int end)
+        {
+            nSamples=end-start+1;
+            cursor=0;
+            output=new byte[nSamples*SMALLINT+WAV_HDR_SIZE];
+            buildHeader(sampleRate,nChannels);
+            writeData(data,start,end);
+        }
+        // ------------------------------------------------------------
+        private void buildHeader(int sampleRate, short nChannels)
+        {
+            write("RIFF");
+            write(output.length);
+            write("WAVE");
+            writeFormat(sampleRate, nChannels);
+        }
+        // ------------------------------------------------------------
+        public void writeFormat(int sampleRate, short nChannels)
+        {
+            write("fmt ");
+            write(WAV_FMT_SIZE-WAV_DATA_SIZE);
+            write(PCM);
+            write(nChannels);
+            write(sampleRate);
+            write(nChannels * sampleRate * SAMPLE_SIZE);
+            write((short)(nChannels * SAMPLE_SIZE));
+            write((short)16);
+        }
+        // ------------------------------------------------------------
+        public void writeData(short[] data, int start, int end)
+        {
+            write("data");
+            write(nSamples*SMALLINT);
+            for(int i=start; i<=end; write(data[i++]));
+        }
+        // ------------------------------------------------------------
+        private void write(byte b)
+        {
+            output[cursor++]=b;
+        }
+        // ------------------------------------------------------------
+        private void write(String id)
+        {
+            if(id.length()!=ID_STRING_SIZE) Log.d("wav","String "+id+" must have four characters.");
+            else {
+                for(int i=0; i<ID_STRING_SIZE; ++i) write((byte)id.charAt(i));
+            }
+        }
+        // ------------------------------------------------------------
+        private void write(int i)
+        {
+            write((byte) (i&0xFF)); i>>=8;
+            write((byte) (i&0xFF)); i>>=8;
+            write((byte) (i&0xFF)); i>>=8;
+            write((byte) (i&0xFF));
+        }
+        // ------------------------------------------------------------
+        private void write(short i)
+        {
+            write((byte) (i&0xFF)); i>>=8;
+            write((byte) (i&0xFF));
+        }
+        // ------------------------------------------------------------
+        public boolean wroteToFile(File file)
+        {
+            boolean ok=false;
+
+            try {
+                File path=file;
+                FileOutputStream outFile = new FileOutputStream(path);
+                outFile.write(output);
+                outFile.close();
+                ok=true;
+            } catch (java.io.FileNotFoundException e) {
+                e.printStackTrace();
+                ok=false;
+            } catch (IOException e) {
+                ok=false;
+                e.printStackTrace();
+            }
+            return ok;
+        }
     }
 }

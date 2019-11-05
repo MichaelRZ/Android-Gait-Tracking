@@ -12,7 +12,9 @@ Basically:
 2. Connect watch to phone with the Wear OS app.
 3. Turn on debugging for both.
 4. Type in these lines in Android Studio's terminal, after installing ADB:
+  
   adb forward tcp:4444 localabstract:/adb-hub
+  
   adb connect 127.0.0.1:4444
 
 After this, there shouldn't need to be a computer except to access the CSV / WAV files.
